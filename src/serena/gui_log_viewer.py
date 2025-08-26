@@ -218,7 +218,7 @@ class GuiLogViewer:
             if sys.platform == "win32":
                 import ctypes
 
-                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("oraios.serena")
+                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("ljepson.serena")
 
             self.root = tk.Tk()
             self.root.title(self.title)

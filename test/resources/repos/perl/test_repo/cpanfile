@@ -1,0 +1,14 @@
+requires 'perl', '5.016';
+
+# Core modules used
+requires 'strict';
+requires 'warnings';
+requires 'Exporter';
+requires 'FindBin';
+requires 'POSIX';
+
+# Testing
+test_requires 'Test::More';
+
+# Optional but commonly used
+recommends 'PLS';

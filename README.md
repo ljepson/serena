@@ -116,6 +116,7 @@ With Serena, we provide direct, out-of-the-box support for:
   * Nix (requires nixd installation)
   * Elixir (requires installation of NextLS and Elixir; **Windows not supported**)
   * Erlang (requires installation of beam and [erlang_ls](https://github.com/erlang-ls/erlang_ls), experimental, might be slow or hang)
+  * Perl (uses [Perl::LanguageServer](https://metacpan.org/pod/Perl::LanguageServer) - automatically installs if not present)
 
 Support for further languages can easily be added by providing a shallow adapter for a new language server implementation,
 see Serena's [memory on that](.serena/memories/adding_new_language_support_guide.md).
@@ -205,7 +206,7 @@ This and other settings can be adjusted in the [configuration](#configuration) a
 `uvx` can be used to run the latest version of Serena directly from the repository, without an explicit local installation.
 
 ```shell
-uvx --from git+https://github.com/oraios/serena serena start-mcp-server
+uvx --from git+https://github.com/ljepson/serena serena start-mcp-server
 ```
 
 Explore the CLI to see some of the customization options that serena provides (more info on them below).
@@ -215,7 +216,7 @@ Explore the CLI to see some of the customization options that serena provides (m
 1. Clone the repository and change into it.
 
    ```shell
-   git clone https://github.com/oraios/serena
+   git clone https://github.com/ljepson/serena
    cd serena
    ```
 
@@ -246,7 +247,7 @@ You can run the Serena MCP server directly via docker as follows,
 assuming that the projects you want to work on are all located in `/path/to/your/projects`:
 
 ```shell
-docker run --rm -i --network host -v /path/to/your/projects:/workspaces/projects ghcr.io/oraios/serena:latest serena start-mcp-server --transport stdio
+docker run --rm -i --network host -v /path/to/your/projects:/workspaces/projects ghcr.io/ljepson/serena:latest serena start-mcp-server --transport stdio
 ```
 
 Replace `/path/to/your/projects` with the absolute path to your projects directory. The Docker approach provides:
@@ -264,10 +265,10 @@ See the [Docker documentation](DOCKER.md) for detailed setup instructions, confi
 If you are using Nix and [have enabled the `nix-command` and `flakes` features](https://nixos.wiki/wiki/flakes), you can run Serena using the following command:
 
 ```bash
-nix run github:oraios/serena -- start-mcp-server --transport stdio
+nix run github:ljepson/serena -- start-mcp-server --transport stdio
 ```
 
-You can also install Serena by referencing this repo (`github:oraios/serena`) and using it in your Nix flake. The package is exported as `serena`.
+You can also install Serena by referencing this repo (`github:ljepson/serena`) and using it in your Nix flake. The package is exported as `serena`.
 
 #### SSE Mode
 
@@ -310,7 +311,7 @@ Serena is configured in four places:
    You can edit it directly or use
 
    ```shell
-   uvx --from git+https://github.com/oraios/serena serena config edit
+   uvx --from git+https://github.com/ljepson/serena serena config edit
    ```
 
    (or use the `--directory` command version).
@@ -323,7 +324,7 @@ Serena is configured in four places:
    generate it explicitly with
 
    ```shell
-   uvx --from git+https://github.com/oraios/serena serena project generate-yml
+   uvx --from git+https://github.com/ljepson/serena serena project generate-yml
    ```
 
    (or use the `--directory` command version).
@@ -354,7 +355,7 @@ tool application may be very slow.
 To do so, run this from the project directory (or pass the path to the project as an argument):
 
 ```shell
-uvx --from git+https://github.com/oraios/serena serena project index
+uvx --from git+https://github.com/ljepson/serena serena project index
 ```
 
 (or use the `--directory` command version).
@@ -373,7 +374,7 @@ where `<serena-mcp-server>` is your way of [running the Serena MCP server](#runn
 For example, when using `uvx`, you would run
 
 ```shell
-claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)
+claude mcp add serena -- uvx --from git+https://github.com/ljepson/serena serena start-mcp-server --context ide-assistant --project $(pwd)
 ```
 
 ℹ️ Serena comes with an instruction text, and Claude needs to read it to properly use Serena's tools.
@@ -394,7 +395,7 @@ Unlike Claude Code, in Codex you add an MCP server globally and not per project.
 ```toml
 [mcp_servers.serena]
 command = "uvx"
-args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
+args = ["--from", "git+https://github.com/ljepson/serena", "serena", "start-mcp-server", "--context", "codex"]
 ```
 
 After codex has started, you need to activate the project, which you can do by saying:
@@ -448,7 +449,7 @@ Add the `serena` MCP server configuration, using a [run command](#running-the-se
        "mcpServers": {
            "serena": {
                "command": "/abs/path/to/uvx",
-               "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server"]
+               "args": ["--from", "git+https://github.com/ljepson/serena", "serena", "start-mcp-server"]
            }
        }
   }
@@ -461,7 +462,7 @@ Add the `serena` MCP server configuration, using a [run command](#running-the-se
        "mcpServers": {
            "serena": {
                "command": "docker",
-               "args": ["run", "--rm", "-i", "--network", "host", "-v", "/path/to/your/projects:/workspaces/projects", "ghcr.io/oraios/serena:latest", "serena", "start-mcp-server", "--transport", "stdio"]
+               "args": ["run", "--rm", "-i", "--network", "host", "-v", "/path/to/your/projects:/workspaces/projects", "ghcr.io/ljepson/serena:latest", "serena", "start-mcp-server", "--transport", "stdio"]
            }
        }
    }
@@ -589,13 +590,13 @@ You can create your own contexts and modes to precisely tailor Serena to your ne
 * You can use Serena's CLI to manage modes and contexts. Check out
 
     ```shell
-    uvx --from git+https://github.com/oraios/serena serena mode --help
+    uvx --from git+https://github.com/ljepson/serena serena mode --help
     ```
 
     and
 
     ```shell
-    uvx --from git+https://github.com/oraios/serena serena context --help
+    uvx --from git+https://github.com/ljepson/serena serena context --help
     ```
 
     _NOTE_: Custom contexts/modes are simply YAML files in `<home>/.serena`, they are automatically registered and available for use by their name (filename without the `.yml` extension). If you don't want to use Serena's CLI, you can create and manage them in any way you see fit.
